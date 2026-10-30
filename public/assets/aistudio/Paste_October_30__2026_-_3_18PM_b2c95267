@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>寫作與閱讀學習平台</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Serif TC', serif;
+            background-color: #f7f4ed;
+            background-image: radial-gradient(#e2d9c8 1px, transparent 1px);
+            background-size: 24px 24px;
+        }
+        .active-tab {
+            border-bottom: 3px solid #8c2e1b;
+            color: #8c2e1b;
+            font-weight: 700;
+        }
+        .ancient-card {
+            background-color: #fcfaf5;
+            border: 1px solid #d8caa7;
+            box-shadow: 2px 3px 10px rgba(80, 60, 40, 0.05);
+        }
+        .ancient-btn-primary {
+            background-color: #8c2e1b;
+            color: #fefcf8;
+        }
+        .ancient-btn-primary:hover {
+            background-color: #6f2213;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-stone-800 antialiased flex flex-col justify-between">
+
+    <!-- 頂部導覽列 -->
+    <header class="bg-[#f2ebdc] border-b-2 border-[#b8a686] sticky top-0 z-50 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-3 sm:space-x-4 cursor-pointer" onclick="switchNav('home')">
+                <div class="bg-[#8c2e1b] text-[#f2ebdc] p-2 rounded-lg font-bold flex items-center justify-center w-10 h-10 sm:w-12 sm:h-12 shadow flex-shrink-0">
+                    <i class="fa-solid fa-scroll text-xl sm:text-2xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-black text-base sm:text-xl tracking-wider text-[#4a2e1b]">寫作與閱讀學習平台</h1>
+                    <p class="text-[10px] sm:text-xs text-[#7c634b] font-semibold">線上作文批改 · 每週知識與出題</p>
+                </div>
+            </div>
+
+            <div class="flex items-center space-x-2 sm:space-x-3">
+                <!-- 帳號狀態區 -->
+                <div id="authArea" class="flex items-center"></div>
+                <!-- 手機版選單開關按鈕 -->
+                <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-[#4a2e1b] hover:text-[#8c2e1b] focus:outline-none">
+                    <i class="fa-solid fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 手機版下拉選單 Drawer -->
+        <div id="mobileMenu" class="hidden lg:hidden bg-[#f7f4ed] border-b-2 border-[#b8a686] px-4 pt-2 pb-4 space-y-2">
+            <button onclick="switchNav('home'); toggleMobileMenu();" class="w-full text-left py-2 px-3 font-bold text-[#4a2e1b] hover:bg-[#e4d7be] rounded-lg flex items-center space-x-2">
+                <i class="fa-solid fa-landmark"></i><span>平台公告</span>
+            </button>
+            <button onclick="switchNav('write'); toggleMobileMenu();" class="w-full text-left py-2 px-3 font-bold text-[#4a2e1b] hover:bg-[#e4d7be] rounded-lg flex items-center space-x-2">
+                <i class="fa-solid fa-pen-nib"></i><span>作文寫作區</span>
+            </button>
+            <button onclick="switchNav('articles'); toggleMobileMenu();" class="w-full text-left py-2 px-3 font-bold text-[#4a2e1b] hover:bg-[#e4d7be] rounded-lg flex items-center space-x-2">
+                <i class="fa-solid fa-book-journal-whills"></i><span>知識文章庫</span>
+            </button>
+            <button onclick="switchNav('records'); toggleMobileMenu();" class="w-full text-left py-2 px-3 font-bold text-[#4a2e1b] hover:bg-[#e4d7be] rounded-lg flex items-center space-x-2 student-only hidden">
+                <i class="fa-solid fa-book-bookmark"></i><span>個人作業紀錄</span>
+            </button>
+            <button onclick="switchNav('teacher'); toggleMobileMenu();" class="w-full text-left py-2 px-3 font-bold text-[#8c2e1b] hover:bg-[#e4d7be] rounded-lg flex items-center space-x-2 teacher-only hidden">
+                <i class="fa-solid fa-signature"></i><span>作文批改中心</span>
+            </button>
+            <button onclick="switchNav('quotes'); toggleMobileMenu();" class="w-full text-left py-2 px-3 font-bold text-[#8c2e1b] hover:bg-[#e4d7be] rounded-lg flex items-center space-x-2 teacher-only hidden">
+                <i class="fa-solid fa-quote-left"></i><span>每日名言發布</span>
+            </button>
+            <button onclick="switchNav('manage-topics'); toggleMobileMenu();" class="w-full text-left py-2 px-3 font-bold text-[#8c2e1b] hover:bg-[#e4d7be] rounded-lg flex items-center space-x-2 teacher-only hidden">
+                <i class="fa-solid fa-pen-to-square"></i><span>發布題目</span>
+            </button>
+            <button onclick="switchNav('students'); toggleMobileMenu();" class="w-full text-left py-2 px-3 font-bold text-[#8c2e1b] hover:bg-[#e4d7be] rounded-lg flex items-center space-x-2 teacher-only hidden">
+                <i class="fa-solid fa-users"></i><span>學生名冊</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- 主要內容區 -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 flex-1 w-full">
+
+        <!-- 未登入提示 Banner -->
+        <div id="guestBanner" class="ancient-card p-4 sm:p-6 rounded-2xl mb-6 sm:mb-8 border-l-8 border-l-[#8c2e1b] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center space-x-3 sm:space-x-4">
+                <i class="fa-solid fa-feather-pointed text-2xl sm:text-3xl text-[#8c2e1b] flex-shrink-0"></i>
+                <div>
+                    <p class="font-bold text-base sm:text-lg text-[#4a2e1b]">歡迎使用學習平台</p>
+                    <p class="text-xs sm:text-sm text-[#7c634b]">學生請先登入或註冊；老師請由頁尾專屬通道登入管理後台。</p>
+                </div>
+            </div>
+            <div class="flex space-x-2 sm:space-x-3 w-full sm:w-auto">
+                <button onclick="openAuthModal('student-login')" class="flex-1 sm:flex-none ancient-btn-primary text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl font-bold transition shadow text-center">學生登入</button>
+                <button onclick="openAuthModal('student-register')" class="flex-1 sm:flex-none bg-[#e4d7be] hover:bg-[#d8c7a7] text-[#4a2e1b] text-xs sm:text-sm px-4 sm:px-5 py-2.5 rounded-xl font-bold transition border border-[#b8a686] text-center">註冊帳號</button>
+            </div>
+        </div>
+
+        <!-- 桌機版功能分頁選單 -->
+        <div class="hidden lg:flex border-b-2 border-[#d8caa7] mb-8 space-x-8 text-base font-bold overflow-x-auto">
+            <button id="nav-home" onclick="switchNav('home')" class="pb-3 px-1 active-tab flex items-center space-x-2 whitespace-nowrap">
+                <i class="fa-solid fa-landmark"></i><span>平台公告</span>
+            </button>
+            <button id="nav-write" onclick="switchNav('write')" class="pb-3 px-1 text-[#7c634b] hover:text-[#4a2e1b] flex items-center space-x-2 whitespace-nowrap">
+                <i class="fa-solid fa-pen-nib"></i><span>作文寫作區</span>
+            </button>
+            <button id="nav-articles" onclick="switchNav('articles')" class="pb-3 px-1 text-[#7c634b] hover:text-[#4a2e1b] flex items-center space-x-2 whitespace-nowrap">
+                <i class="fa-solid fa-book-journal-whills"></i><span>知識文章庫</span>
+            </button>
+            <button id="nav-records" onclick="switchNav('records')" class="pb-3 px-1 text-[#7c634b] hover:text-[#4a2e1b] flex items-center space-x-2 whitespace-nowrap student-only hidden">
+                <i class="fa-solid fa-book-bookmark"></i><span>個人作業紀錄</span>
+            </button>
+            <!-- 老師端功能 -->
+            <button id="nav-teacher" onclick="switchNav('teacher')" class="pb-3 px-1 text-[#7c634b] hover:text-[#4a2e1b] flex items-center space-x-2 whitespace-nowrap teacher-only hidden">
+                <i class="fa-solid fa-signature"></i><span>作文批改中心</span>
+            </button>
+            <button id="nav-quotes" onclick="switchNav('quotes')" class="pb-3 px-1 text-[#7c634b] hover:text-[#4a2e1b] flex items-center space-x-2 whitespace-nowrap teacher-only hidden">
+                <i class="fa-solid fa-quote-left"></i><span>每日名言發布</span>
+            </button>
+            <button id="nav-manage-topics" onclick="switchNav('manage-topics')" class="pb-3 px-1 text-[#7c634b] hover:text-[#4a2e1b] flex items-center space-x-2 whitespace-nowrap teacher-only hidden">
+                <i class="fa-solid fa-pen-to-square"></i><span>發布題目</span>
+            </button>
+            <button id="nav-students" onclick="switchNav('students')" class="pb-3 px-1 text-[#7c634b] hover:text-[#4a2e1b] flex items-center space-x-2 whitespace-nowrap teacher-only hidden">
+                <i class="fa-solid fa-users"></i><span>學生名冊</span>
+            </button>
+        </div>
+
+        <!-- 頁面 1: 首頁 -->
+        <section id="page-home" class="space-y-6 sm:space-y-8">
+            
+            <!-- 每日名言佳句專區 -->
+            <div class="ancient-card p-5 sm:p-6 rounded-2xl border-2 border-[#b8a686] bg-[#fcf8ef] relative overflow-hidden shadow-sm">
+                <div class="absolute -right-4 -bottom-4 text-[#e2d9c8]/40 text-7xl sm:text-8xl pointer-events-none">
+                    <i class="fa-solid fa-quote-right"></i>
+                </div>
+                <div class="relative z-10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div class="space-y-1.5 flex-1">
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-[#8c2e1b] text-[#f2ebdc] text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full font-bold">每日名言佳句</span>
+                            <span class="text-[10px] sm:text-xs text-[#7c634b] font-semibold"><i class="fa-solid fa-feather mr-1"></i>wen 老師推薦</span>
+                        </div>
+                        <blockquote id="dailyQuoteText" class="text-base sm:text-lg font-bold text-[#4a2e1b] italic pt-1">
+                            今日暫無名言佳句
+                        </blockquote>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-gradient-to-r from-[#8c2e1b] to-[#5c1c0f] rounded-2xl p-6 sm:p-10 text-[#f7f4ed] shadow-lg border border-[#a8422d]">
+                <div class="max-w-3xl space-y-3 sm:space-y-4">
+                    <span class="bg-[#f2ebdc]/20 text-[#f2ebdc] text-[10px] sm:text-xs px-2.5 py-1 rounded-full font-bold border border-[#f2ebdc]/30">本週試題</span>
+                    <h2 id="homeTopicTitle" class="text-2xl sm:text-3xl font-black tracking-wide">目前尚未發布題目</h2>
+                    <p id="homeTopicDesc" class="text-[#e2d9c8] text-xs sm:text-base leading-relaxed">老師尚未發布本週作文題目，請稍後再來查看。</p>
+                    <div class="pt-2 flex flex-wrap items-center gap-3 sm:gap-4 text-[10px] sm:text-xs text-[#d8caa7]">
+                        <span><i class="fa-regular fa-clock mr-1"></i> 截止日期：<span id="homeTopicDueDate">--</span></span>
+                        <span><i class="fa-regular fa-user mr-1"></i> 出題老師：wen 老師</span>
+                    </div>
+                    <div class="pt-2 sm:pt-4">
+                        <button onclick="startWritingCurrentTopic()" class="w-full sm:w-auto justify-center bg-[#f2ebdc] text-[#8c2e1b] hover:bg-white px-6 py-3 rounded-xl font-bold shadow transition flex items-center space-x-2">
+                            <i class="fa-solid fa-ink-horn"></i><span>開始寫作</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="ancient-card p-4 sm:p-6 rounded-2xl">
+                    <h3 class="font-bold text-base sm:text-lg mb-4 text-[#4a2e1b] flex items-center space-x-2 border-b border-[#d8caa7] pb-2">
+                        <i class="fa-solid fa-list-ol text-[#8c2e1b]"></i><span>歷屆題目列表</span>
+                    </h3>
+                    <div id="homeTopicList" class="space-y-3"></div>
+                </div>
+
+                <div class="ancient-card p-4 sm:p-6 rounded-2xl">
+                    <h3 class="font-bold text-base sm:text-lg mb-4 text-[#4a2e1b] flex items-center space-x-2 border-b border-[#d8caa7] pb-2">
+                        <i class="fa-solid fa-book-open-reader text-[#8c2e1b]"></i><span>每週精選文章</span>
+                    </h3>
+                    <div id="homeArticleList" class="space-y-3"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁面 2: 作文寫作區 -->
+        <section id="page-write" class="hidden max-w-4xl mx-auto space-y-6">
+            <div class="ancient-card p-4 sm:p-8 rounded-2xl space-y-6">
+                <div>
+                    <label class="block text-xs font-bold text-[#7c634b] uppercase mb-2">選擇要寫作的題目</label>
+                    <select id="writeTopicSelect" onchange="onWriteTopicChange()" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] rounded-xl p-3 text-sm sm:text-base font-bold text-[#4a2e1b] outline-none">
+                    </select>
+                </div>
+
+                <div class="bg-[#f2ebdc] p-4 rounded-xl border border-[#b8a686]">
+                    <p class="font-bold text-[#4a2e1b] text-sm mb-1"><i class="fa-solid fa-compass mr-1"></i>題目引導說明：</p>
+                    <p id="writeTopicGuide" class="text-xs sm:text-sm text-[#614935] leading-relaxed">請先由上方選單選擇題目。</p>
+                </div>
+
+                <div class="space-y-2">
+                    <label class="block text-xs sm:text-sm font-bold text-[#4a2e1b]">作文標題</label>
+                    <input type="text" id="essayTitleInput" placeholder="請輸入文章標題..." class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] rounded-xl p-3 text-sm outline-none focus:border-[#8c2e1b]">
+                </div>
+
+                <div class="space-y-2">
+                    <div class="flex justify-between items-center">
+                        <label class="block text-xs sm:text-sm font-bold text-[#4a2e1b]">作文內文</label>
+                        <span class="text-xs text-[#7c634b]"><i class="fa-solid fa-calculator mr-1"></i>字數：<span id="charCount" class="font-bold text-[#8c2e1b]">0</span> 字</span>
+                    </div>
+                    <textarea id="essayContentInput" rows="12" oninput="updateCharCount()" placeholder="由此揮毫鋪陳..." class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] rounded-xl p-3 sm:p-4 outline-none focus:border-[#8c2e1b] leading-relaxed text-sm sm:text-base"></textarea>
+                </div>
+
+                <div class="flex flex-col sm:flex-row items-center justify-end gap-3 pt-4 border-t border-[#d8caa7]">
+                    <button onclick="saveDraft()" class="w-full sm:w-auto bg-[#e4d7be] hover:bg-[#d8c7a7] text-[#4a2e1b] px-5 py-2.5 rounded-xl text-sm font-bold transition">儲存草稿</button>
+                    <button onclick="submitEssay()" class="w-full sm:w-auto ancient-btn-primary px-6 py-2.5 rounded-xl text-sm font-bold shadow transition">正式呈交作業</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁面 3: 知識文章庫 -->
+        <section id="page-articles" class="hidden space-y-6">
+            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 ancient-card p-4 rounded-xl">
+                <div class="flex items-center space-x-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+                    <button onclick="filterArticles('all')" class="art-filter px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold rounded-lg bg-[#8c2e1b] text-white whitespace-nowrap">全部文章</button>
+                    <button onclick="filterArticles('bookmarked')" class="art-filter px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold rounded-lg bg-[#e4d7be] text-[#4a2e1b] whitespace-nowrap">⭐ 收藏清單</button>
+                    <button onclick="filterArticles('flagged')" class="art-filter px-3 sm:px-4 py-1.5 sm:py-2 text-xs font-bold rounded-lg bg-[#e4d7be] text-[#4a2e1b] whitespace-nowrap">🚩 重要標記</button>
+                </div>
+                <button onclick="openCreateArticleModal()" class="teacher-only hidden w-full sm:w-auto justify-center bg-[#2d5a3f] hover:bg-[#20432f] text-white px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition flex items-center space-x-2">
+                    <i class="fa-solid fa-pen-nib"></i><span>發布知識文章</span>
+                </button>
+            </div>
+
+            <div id="articlesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+        </section>
+
+        <!-- 頁面 4: 學生個人作業紀錄 -->
+        <section id="page-records" class="hidden space-y-6">
+            <div class="ancient-card p-4 sm:p-6 rounded-2xl">
+                <h3 class="font-bold text-base sm:text-lg mb-4 text-[#4a2e1b] flex items-center space-x-2 border-b border-[#d8caa7] pb-3">
+                    <i class="fa-solid fa-clock-rotate-left text-[#8c2e1b]"></i><span>個人作業呈交與批閱記錄</span>
+                </h3>
+                <div id="studentRecordList" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <!-- 頁面 5: 老師批改中心 -->
+        <section id="page-teacher" class="hidden space-y-6">
+            <div class="ancient-card p-4 sm:p-6 rounded-2xl">
+                <h3 class="font-bold text-base sm:text-lg mb-4 sm:mb-6 text-[#4a2e1b] flex items-center space-x-2 border-b border-[#d8caa7] pb-3">
+                    <i class="fa-solid fa-list-check text-[#8c2e1b]"></i><span>學生作文呈交清單</span>
+                </h3>
+                <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                    <table class="w-full text-left text-xs sm:text-sm text-[#4a2e1b] min-w-[600px]">
+                        <thead class="bg-[#f2ebdc] text-[#7c634b] uppercase text-[10px] sm:text-xs">
+                            <tr>
+                                <th class="p-3">學生姓名</th>
+                                <th class="p-3">題目</th>
+                                <th class="p-3">呈交日期</th>
+                                <th class="p-3">狀態</th>
+                                <th class="p-3">得分 / 等級</th>
+                                <th class="p-3 text-right">批閱操作</th>
+                            </tr>
+                        </thead>
+                        <tbody id="teacherSubmissionTable" class="divide-y divide-[#d8caa7]"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁面 6: 老師每日名言管理 -->
+        <section id="page-quotes" class="hidden max-w-3xl mx-auto space-y-6">
+            <div class="ancient-card p-4 sm:p-8 rounded-2xl space-y-6">
+                <h3 class="font-bold text-base sm:text-lg text-[#4a2e1b] border-b border-[#d8caa7] pb-3 flex items-center space-x-2">
+                    <i class="fa-solid fa-quote-left text-[#8c2e1b]"></i><span>發布首頁「每日名言佳句」</span>
+                </h3>
+                
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs sm:text-sm font-bold text-[#7c634b] mb-1">今日名言佳句內容</label>
+                        <textarea id="teacherDailyQuoteInput" rows="4" placeholder="例如：長風破浪會有時，直掛雲帆濟滄海。—— 李白" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] rounded-xl p-3 text-xs sm:text-sm outline-none focus:border-[#8c2e1b]"></textarea>
+                    </div>
+                    <div class="flex justify-end">
+                        <button onclick="updateDailyQuote()" class="w-full sm:w-auto ancient-btn-primary px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition shadow">
+                            更新首頁名言佳句
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁面 7: 老師發布題目 -->
+        <section id="page-manage-topics" class="hidden max-w-2xl mx-auto space-y-6">
+            <div class="ancient-card p-4 sm:p-8 rounded-2xl space-y-6">
+                <h3 class="font-bold text-base sm:text-lg text-[#4a2e1b] border-b border-[#d8caa7] pb-3">發布每週作文題目</h3>
+                <div class="space-y-4 text-xs sm:text-sm">
+                    <div>
+                        <label class="block font-bold mb-1">作文題目</label>
+                        <input type="text" id="newTopicTitle" placeholder="例如：記一次難忘的遊歷" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] rounded-xl p-3 outline-none">
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">題目引導說明</label>
+                        <textarea id="newTopicDesc" rows="4" placeholder="請輸入對學生作文的引導要求與思考方向..." class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] rounded-xl p-3 outline-none"></textarea>
+                    </div>
+                    <div>
+                        <label class="block font-bold mb-1">截止日期</label>
+                        <input type="date" id="newTopicDueDate" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] rounded-xl p-3 outline-none">
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="newTopicIsWeekly" class="w-4 h-4 text-[#8c2e1b] rounded">
+                        <label for="newTopicIsWeekly" class="font-bold text-[#4a2e1b]">設為本週首頁主打題目</label>
+                    </div>
+                </div>
+                <div class="pt-4 border-t border-[#d8caa7] flex justify-end">
+                    <button onclick="publishTopic()" class="w-full sm:w-auto ancient-btn-primary px-6 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition">正式發布題目</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 頁面 8: 學生名冊管理 -->
+        <section id="page-students" class="hidden space-y-6">
+            <div class="ancient-card p-4 sm:p-6 rounded-2xl">
+                <h3 class="font-bold text-base sm:text-lg text-[#4a2e1b] mb-4 sm:mb-6 border-b border-[#d8caa7] pb-3">全班學生名冊與學習數據</h3>
+                <div class="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                    <table class="w-full text-left text-xs sm:text-sm text-[#4a2e1b] min-w-[500px]">
+                        <thead class="bg-[#f2ebdc] text-[#7c634b] uppercase text-[10px] sm:text-xs">
+                            <tr>
+                                <th class="p-3">學生姓名</th>
+                                <th class="p-3">Email</th>
+                                <th class="p-3">已呈交篇數</th>
+                                <th class="p-3">平均分數</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentManagementTable" class="divide-y divide-[#d8caa7]"></tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 頁尾區域 -->
+    <footer class="bg-[#e8dec8] border-t border-[#b8a686] py-6 text-center text-xs text-[#7c634b]">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>© 寫作與閱讀學習平台</p>
+            <div class="flex items-center space-x-4">
+                <button onclick="openAuthModal('teacher-login')" class="text-[#8c2e1b] hover:underline font-bold"><i class="fa-solid fa-user-shield mr-1"></i>教師管理後台通道</button>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal 1: 學生登入/註冊/教師管理員登入 Modal -->
+    <div id="authModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="ancient-card w-full max-w-md rounded-2xl shadow-2xl overflow-hidden border-2 border-[#b8a686]">
+            <div class="p-5 sm:p-6 space-y-4 sm:space-y-6">
+                <div class="flex justify-between items-center border-b border-[#d8caa7] pb-3">
+                    <h3 id="authModalTitle" class="text-lg sm:text-xl font-bold text-[#4a2e1b]">學生登入</h3>
+                    <button onclick="closeAuthModal()" class="text-[#7c634b] hover:text-[#4a2e1b]"><i class="fa-solid fa-xmark text-xl"></i></button>
+                </div>
+
+                <form id="authForm" onsubmit="handleAuthSubmit(event)" class="space-y-4">
+                    <div id="registerNameField" class="hidden">
+                        <label class="block text-xs font-bold text-[#7c634b] mb-1">學生姓名</label>
+                        <input type="text" id="authName" placeholder="例如：李小華" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] p-2.5 rounded-lg text-sm outline-none">
+                    </div>
+
+                    <div>
+                        <label id="authAccountLabel" class="block text-xs font-bold text-[#7c634b] mb-1">電子郵件 Email</label>
+                        <input type="text" id="authEmail" required placeholder="student@example.com" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] p-2.5 rounded-lg text-sm outline-none">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-[#7c634b] mb-1">密碼</label>
+                        <input type="password" id="authPassword" required placeholder="••••••••" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] p-2.5 rounded-lg text-sm outline-none">
+                    </div>
+
+                    <button type="submit" id="authSubmitBtn" class="w-full ancient-btn-primary font-bold py-3 rounded-xl transition text-sm shadow">登入</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 2: 老師批改作文 Modal -->
+    <div id="gradeModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-3 sm:p-4">
+        <div class="ancient-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[92vh] flex flex-col border-2 border-[#b8a686]">
+            <div class="p-4 sm:p-6 border-b border-[#d8caa7] flex justify-between items-center">
+                <h3 class="text-lg sm:text-xl font-bold text-[#4a2e1b]">作文線上批閱</h3>
+                <button onclick="closeGradeModal()" class="text-[#7c634b] hover:text-[#4a2e1b]"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6 flex-1">
+                <div>
+                    <h4 id="gradeModalEssayTitle" class="text-base sm:text-lg font-bold text-[#4a2e1b]"></h4>
+                    <p class="text-xs text-[#7c634b] mt-1">作者：<span id="gradeModalAuthor" class="font-bold"></span> | 字數：<span id="gradeModalWords" class="font-bold"></span> 字</p>
+                </div>
+                <div class="bg-[#f2ebdc] p-3 sm:p-4 rounded-xl border border-[#b8a686]">
+                    <p id="gradeModalEssayContent" class="whitespace-pre-wrap text-xs sm:text-sm leading-relaxed text-[#4a2e1b]"></p>
+                </div>
+                <div class="space-y-4 border-t border-[#d8caa7] pt-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-[#7c634b] mb-1">得分 (0 - 100)</label>
+                            <input type="number" id="gradeScore" min="0" max="100" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] p-2.5 rounded-lg text-sm outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-[#7c634b] mb-1">評級標籤</label>
+                            <select id="gradeLevel" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] p-2.5 rounded-lg text-sm outline-none">
+                                <option value="特優">特優 (A+)</option>
+                                <option value="優等">優等 (A)</option>
+                                <option value="甲等">甲等 (B)</option>
+                                <option value="尚可">尚可 (C)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-[#7c634b] mb-1">批閱導師評語</label>
+                        <textarea id="gradeFeedback" rows="3" placeholder="請撰寫對作文章法、用語、立意之講評..." class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] p-2.5 rounded-lg text-sm outline-none"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="p-3 sm:p-4 border-t border-[#d8caa7] bg-[#f2ebdc] flex justify-end space-x-3">
+                <button onclick="closeGradeModal()" class="px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#7c634b]">取消</button>
+                <button onclick="submitGrade()" class="ancient-btn-primary px-4 sm:px-5 py-2 rounded-lg text-xs sm:text-sm font-bold shadow transition">發布批改評語</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 3: 老師新增知識文章 Modal -->
+    <div id="articleModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
+        <div class="ancient-card w-full max-w-xl rounded-2xl shadow-2xl overflow-hidden border-2 border-[#b8a686]">
+            <div class="p-4 sm:p-6 border-b border-[#d8caa7] flex justify-between items-center">
+                <h3 class="text-lg sm:text-xl font-bold text-[#4a2e1b]">發布知識文章</h3>
+                <button onclick="closeArticleModal()" class="text-[#7c634b] hover:text-[#4a2e1b]"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-4 sm:p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold text-[#7c634b] mb-1">文章標題</label>
+                    <input type="text" id="newArtTitle" placeholder="例如：寫作靈感與修辭方法" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] p-2.5 rounded-lg text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-[#7c634b] mb-1">分類標籤</label>
+                    <input type="text" id="newArtCategory" placeholder="例如：寫作技巧 / 文章賞析" class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] p-2.5 rounded-lg text-sm outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-[#7c634b] mb-1">文章內文</label>
+                    <textarea id="newArtContent" rows="5" placeholder="請輸入文章內容..." class="w-full border-2 border-[#b8a686] bg-[#f7f4ed] p-2.5 rounded-lg text-sm outline-none"></textarea>
+                </div>
+            </div>
+            <div class="p-3 sm:p-4 border-t border-[#d8caa7] bg-[#f2ebdc] flex justify-end space-x-3">
+                <button onclick="closeArticleModal()" class="px-3 sm:px-4 py-2 text-xs sm:text-sm text-[#7c634b]">取消</button>
+                <button onclick="publishArticle()" class="ancient-btn-primary px-4 sm:px-5 py-2 rounded-lg text-xs sm:text-sm font-bold shadow transition">發布文章</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 4: 閱讀文章 Modal -->
+    <div id="readModal" class="fixed inset-0 bg-stone-900/60 backdrop-blur-sm z-50 flex items-center justify-center hidden p-3 sm:p-4">
+        <div class="ancient-card w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col border-2 border-[#b8a686]">
+            <div class="p-4 sm:p-6 border-b border-[#d8caa7] flex justify-between items-center">
+                <span id="readModalCategory" class="text-xs bg-[#e4d7be] text-[#4a2e1b] font-bold px-3 py-1 rounded-full border border-[#b8a686]"></span>
+                <button onclick="closeReadModal()" class="text-[#7c634b] hover:text-[#4a2e1b]"><i class="fa-solid fa-xmark text-xl"></i></button>
+            </div>
+            <div class="p-4 sm:p-6 overflow-y-auto space-y-4 sm:space-y-6 flex-1">
+                <h3 id="readModalTitle" class="text-xl sm:text-2xl font-black text-[#4a2e1b]"></h3>
+                <p id="readModalContent" class="text-[#4a2e1b] leading-relaxed text-sm sm:text-base whitespace-pre-wrap"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript 邏輯 -->
+    <script>
+        // 清除先前快取，確保題目與文章為空
+        localStorage.removeItem('topics');
+        localStorage.removeItem('articles');
+
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
+        let dailyQuote = localStorage.getItem('dailyQuote') || '';
+
+        let topics = [];
+        let submissions = JSON.parse(localStorage.getItem('submissions')) || [];
+        let articles = [];
+
+        let currentAuthMode = 'student-login';
+
+        window.onload = function() {
+            renderAuthArea();
+            renderTopics();
+            renderArticles();
+            renderDailyQuote();
+            if (currentUser) {
+                applyRoleUI();
+            }
+        };
+
+        function saveData() {
+            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            localStorage.setItem('dailyQuote', dailyQuote);
+            localStorage.setItem('topics', JSON.stringify(topics));
+            localStorage.setItem('submissions', JSON.stringify(submissions));
+            localStorage.setItem('articles', JSON.stringify(articles));
+        }
+
+        function renderDailyQuote() {
+            const displayEl = document.getElementById('dailyQuoteText');
+            if (dailyQuote && dailyQuote.trim() !== '') {
+                displayEl.innerText = `「${dailyQuote}」`;
+                displayEl.classList.remove('italic', 'text-stone-400');
+            } else {
+                displayEl.innerText = '今日暫無名言佳句';
+                displayEl.classList.add('italic');
+            }
+        }
+
+        function updateDailyQuote() {
+            const val = document.getElementById('teacherDailyQuoteInput').value.trim();
+            dailyQuote = val;
+            saveData();
+            renderDailyQuote();
+            alert('每日名言佳句已更新成功！');
+            switchNav('home');
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function switchNav(pageId) {
+            document.querySelectorAll('main > section').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`page-${pageId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.active-tab').forEach(el => {
+                el.classList.remove('active-tab');
+                el.classList.add('text-[#7c634b]');
+            });
+            const activeBtn = document.getElementById(`nav-${pageId}`);
+            if (activeBtn) {
+                activeBtn.classList.add('active-tab');
+                activeBtn.classList.remove('text-[#7c634b]');
+            }
+
+            if (pageId === 'teacher') renderTeacherSubmissions();
+            if (pageId === 'records') renderStudentRecords();
+            if (pageId === 'students') renderStudentManagement();
+            if (pageId === 'quotes') {
+                document.getElementById('teacherDailyQuoteInput').value = dailyQuote;
+            }
+        }
+
+        function openAuthModal(mode) {
+            currentAuthMode = mode;
+            const title = document.getElementById('authModalTitle');
+            const btn = document.getElementById('authSubmitBtn');
+            const nameField = document.getElementById('registerNameField');
+            const accountLabel = document.getElementById('authAccountLabel');
+            const emailInput = document.getElementById('authEmail');
+
+            if (mode === 'student-login') {
+                title.innerText = '學生登入';
+                btn.innerText = '學生登入';
+                accountLabel.innerText = '電子郵件 Email';
+                emailInput.placeholder = 'student@example.com';
+                nameField.classList.add('hidden');
+            } else if (mode === 'student-register') {
+                title.innerText = '註冊學生帳號';
+                btn.innerText = '完成註冊並登入';
+                accountLabel.innerText = '電子郵件 Email';
+                emailInput.placeholder = 'student@example.com';
+                nameField.classList.remove('hidden');
+            } else if (mode === 'teacher-login') {
+                title.innerText = '教師管理後台登入';
+                btn.innerText = '進入管理後台';
+                accountLabel.innerText = '教師管理帳號';
+                emailInput.placeholder = '請輸入帳號 (wen)';
+                nameField.classList.add('hidden');
+            }
+
+            document.getElementById('authModal').classList.remove('hidden');
+        }
+
+        function closeAuthModal() {
+            document.getElementById('authModal').classList.add('hidden');
+        }
+
+        function handleAuthSubmit(e) {
+            e.preventDefault();
+            const emailOrAcc = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+
+            if (currentAuthMode === 'teacher-login') {
+                if (emailOrAcc === 'wen' && password === '25336478') {
+                    currentUser = { id: 'teacher_wen', name: 'wen 老師', role: 'teacher', email: 'wen@academy.edu' };
+                    saveData();
+                    renderAuthArea();
+                    applyRoleUI();
+                    closeAuthModal();
+                    switchNav('teacher');
+                    alert('尊貴的 wen 老師，歡迎登入管理後台！');
+                } else {
+                    alert('教師帳號或密碼不正確！');
+                }
+            } else if (currentAuthMode === 'student-login') {
+                const user = users.find(u => u.email === emailOrAcc && u.password === password && u.role === 'student');
+                if (user) {
+                    currentUser = user;
+                    saveData();
+                    renderAuthArea();
+                    applyRoleUI();
+                    closeAuthModal();
+                    alert(`歡迎回來，${user.name} 同學！`);
+                } else {
+                    alert('學生 Email 或密碼不正確！');
+                }
+            } else if (currentAuthMode === 'student-register') {
+                if (users.some(u => u.email === emailOrAcc)) {
+                    alert('該 Email 已被註冊！');
+                    return;
+                }
+                const name = document.getElementById('authName').value.trim();
+
+                const newUser = { id: 'u_' + Date.now(), name, email: emailOrAcc, password, role: 'student' };
+                users.push(newUser);
+                currentUser = newUser;
+                saveData();
+                renderAuthArea();
+                applyRoleUI();
+                closeAuthModal();
+                alert(`帳號註冊成功！歡迎使用平台，${name}。`);
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            saveData();
+            renderAuthArea();
+            applyRoleUI();
+            switchNav('home');
+            alert('已安全登出！');
+        }
+
+        function renderAuthArea() {
+            const container = document.getElementById('authArea');
+            if (currentUser) {
+                const isTeacher = currentUser.role === 'teacher';
+                container.innerHTML = `
+                    <div class="flex items-center space-x-2 sm:space-x-3">
+                        <div class="text-right hidden sm:block">
+                            <p class="text-xs sm:text-sm font-black text-[#4a2e1b]">${currentUser.name}</p>
+                            <p class="text-[10px] sm:text-xs ${isTeacher ? 'text-[#8c2e1b] font-bold' : 'text-[#2d5a3f] font-bold'}">${isTeacher ? '專任教師' : '學生帳號'}</p>
+                        </div>
+                        <button onclick="logout()" class="text-xs bg-[#e4d7be] hover:bg-[#d8c7a7] text-[#4a2e1b] px-2.5 sm:px-3 py-1.5 sm:py-2 rounded-lg font-bold border border-[#b8a686]">登出</button>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = `
+                    <button onclick="openAuthModal('student-login')" class="ancient-btn-primary text-xs px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-bold shadow transition">學生登入</button>
+                `;
+            }
+        }
+
+        function applyRoleUI() {
+            const guestBanner = document.getElementById('guestBanner');
+            const studentElems = document.querySelectorAll('.student-only');
+            const teacherElems = document.querySelectorAll('.teacher-only');
+
+            if (!currentUser) {
+                guestBanner.classList.remove('hidden');
+                studentElems.forEach(el => el.classList.add('hidden'));
+                teacherElems.forEach(el => el.classList.add('hidden'));
+                return;
+            }
+
+            guestBanner.classList.add('hidden');
+            if (currentUser.role === 'student') {
+                studentElems.forEach(el => el.classList.remove('hidden'));
+                teacherElems.forEach(el => el.classList.add('hidden'));
+            } else {
+                studentElems.forEach(el => el.classList.add('hidden'));
+                teacherElems.forEach(el => el.classList.remove('hidden'));
+            }
+        }
+
+        function renderTopics() {
+            const weekly = topics.find(t => t.isWeekly) || topics[0];
+            if (weekly) {
+                document.getElementById('homeTopicTitle').innerText = weekly.title;
+                document.getElementById('homeTopicDesc').innerText = weekly.desc;
+                document.getElementById('homeTopicDueDate').innerText = weekly.dueDate;
+            } else {
+                document.getElementById('homeTopicTitle').innerText = '目前尚未發布題目';
+                document.getElementById('homeTopicDesc').innerText = '老師尚未發布本週作文題目，請稍後再來查看。';
+                document.getElementById('homeTopicDueDate').innerText = '--';
+            }
+
+            const listContainer = document.getElementById('homeTopicList');
+            if (topics.length === 0) {
+                listContainer.innerHTML = `<p class="text-xs text-[#7c634b] py-2">目前尚無發布的題目。</p>`;
+            } else {
+                listContainer.innerHTML = topics.map(t => `
+                    <div class="p-3 bg-[#f2ebdc] rounded-xl border border-[#b8a686] flex justify-between items-center">
+                        <div>
+                            <p class="font-bold text-[#4a2e1b] text-xs sm:text-sm">${t.title} ${t.isWeekly ? '<span class="text-[10px] bg-[#8c2e1b] text-white font-bold px-1.5 py-0.5 rounded ml-1">每週主打</span>' : ''}</p>
+                            <p class="text-[10px] sm:text-xs text-[#7c634b]">截止日期：${t.dueDate}</p>
+                        </div>
+                        <button onclick="goToWriteTopic('${t.id}')" class="text-xs bg-[#f7f4ed] border border-[#b8a686] hover:bg-[#e4d7be] text-[#4a2e1b] font-bold px-3 py-1.5 rounded-lg transition">寫作</button>
+                    </div>
+                `).join('');
+            }
+
+            const select = document.getElementById('writeTopicSelect');
+            if (topics.length === 0) {
+                select.innerHTML = `<option value="">尚無可選題目</option>`;
+            } else {
+                select.innerHTML = topics.map(t => `<option value="${t.id}">${t.title}</option>`).join('');
+            }
+            onWriteTopicChange();
+        }
+
+        function onWriteTopicChange() {
+            const selectId = document.getElementById('writeTopicSelect').value;
+            const topic = topics.find(t => t.id === selectId);
+            if (topic) {
+                document.getElementById('writeTopicGuide').innerText = topic.desc;
+            } else {
+                document.getElementById('writeTopicGuide').innerText = '目前尚未發布任何作文題目。';
+            }
+        }
+
+        function startWritingCurrentTopic() {
+            if (!currentUser) {
+                openAuthModal('student-login');
+                return;
+            }
+            switchNav('write');
+        }
+
+        function goToWriteTopic(topicId) {
+            if (!currentUser) {
+                openAuthModal('student-login');
+                return;
+            }
+            switchNav('write');
+            document.getElementById('writeTopicSelect').value = topicId;
+            onWriteTopicChange();
+        }
+
+        function updateCharCount() {
+            const text = document.getElementById('essayContentInput').value;
+            document.getElementById('charCount').innerText = text.length;
+        }
+
+        function saveDraft() {
+            alert('作文草稿已儲存至瀏覽器！');
+        }
+
+        function submitEssay() {
+            if (!currentUser || currentUser.role !== 'student') {
+                alert('請先以學生身份登入！');
+                return;
+            }
+            const topicId = document.getElementById('writeTopicSelect').value;
+            const topic = topics.find(t => t.id === topicId);
+            if (!topic) {
+                alert('請先選擇一個有效的作文題目！');
+                return;
+            }
+            const title = document.getElementById('essayTitleInput').value.trim();
+            const content = document.getElementById('essayContentInput').value.trim();
+
+            if (!title || !content) {
+                alert('請填寫完整題目與內容！');
+                return;
+            }
+
+            submissions.push({
+                id: 's_' + Date.now(),
+                studentId: currentUser.id,
+                studentName: currentUser.name,
+                topicTitle: topic.title,
+                essayTitle: title,
+                content: content,
+                date: new Date().toLocaleDateString(),
+                status: 'pending',
+                score: null,
+                level: null,
+                feedback: ''
+            });
+
+            saveData();
+            document.getElementById('essayTitleInput').value = '';
+            document.getElementById('essayContentInput').value = '';
+            updateCharCount();
+            alert('作業提交成功！已呈交 wen 老師批閱。');
+            switchNav('records');
+        }
+
+        function renderStudentRecords() {
+            const container = document.getElementById('studentRecordList');
+            const mySubs = submissions.filter(s => s.studentId === currentUser.id);
+
+            if (mySubs.length === 0) {
+                container.innerHTML = `<p class="text-xs sm:text-sm text-[#7c634b] py-4 text-center">目前尚無作文呈交記錄。</p>`;
+                return;
+            }
+
+            container.innerHTML = mySubs.map(s => `
+                <div class="border border-[#b8a686] rounded-xl p-3 sm:p-4 bg-[#f2ebdc] space-y-2 sm:space-y-3">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1 sm:gap-0">
+                        <div>
+                            <span class="text-xs font-bold text-[#8c2e1b]">[${s.topicTitle}]</span>
+                            <h4 class="font-bold text-sm sm:text-base text-[#4a2e1b]">${s.essayTitle}</h4>
+                            <p class="text-[10px] sm:text-xs text-[#7c634b]">呈交日期：${s.date}</p>
+                        </div>
+                        <div>
+                            ${s.status === 'graded' 
+                                ? `<span class="bg-[#2d5a3f] text-white text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full">已批閱: ${s.score}分 (${s.level})</span>`
+                                : `<span class="bg-[#8c2e1b] text-white text-[10px] sm:text-xs font-bold px-2.5 py-1 rounded-full">待 wen 老師批閱</span>`}
+                        </div>
+                    </div>
+                    <p class="text-xs text-[#614935] line-clamp-2">${s.content}</p>
+                    ${s.status === 'graded' ? `
+                        <div class="bg-[#f7f4ed] p-2.5 sm:p-3 rounded-lg border border-[#b8a686] text-xs text-[#4a2e1b]">
+                            <p class="font-bold text-[#8c2e1b] mb-1">wen 老師講評：</p>
+                            <p>${s.feedback || '文筆流暢，立意深遠！'}</p>
+                        </div>
+                    ` : ''}
+                </div>
+            `).join('');
+        }
+
+        function renderTeacherSubmissions() {
+            const tbody = document.getElementById('teacherSubmissionTable');
+            if (submissions.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-[#7c634b] text-xs sm:text-sm">目前尚無學生呈交作文。</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = submissions.map(s => `
+                <tr class="hover:bg-[#f2ebdc]">
+                    <td class="p-3 font-bold text-[#4a2e1b]">${s.studentName}</td>
+                    <td class="p-3">${s.topicTitle}</td>
+                    <td class="p-3 text-xs text-[#7c634b]">${s.date}</td>
+                    <td class="p-3">
+                        ${s.status === 'graded' 
+                            ? `<span class="text-[10px] sm:text-xs bg-[#2d5a3f] text-white px-2 py-0.5 rounded font-bold">已批閱</span>`
+                            : `<span class="text-[10px] sm:text-xs bg-[#8c2e1b] text-white px-2 py-0.5 rounded font-bold">待批閱</span>`}
+                    </td>
+                    <td class="p-3 font-bold">${s.score !== null ? `${s.score}分 (${s.level})` : '--'}</td>
+                    <td class="p-3 text-right">
+                        <button onclick="openGradeModal('${s.id}')" class="text-xs ancient-btn-primary font-bold px-3 py-1.5 rounded-lg shadow transition">
+                            ${s.status === 'graded' ? '重審批閱' : '開始批閱'}
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function openGradeModal(subId) {
+            currentGradingSubId = subId;
+            const sub = submissions.find(s => s.id === subId);
+            if (!sub) return;
+
+            document.getElementById('gradeModalEssayTitle').innerText = `${sub.topicTitle} - ${sub.essayTitle}`;
+            document.getElementById('gradeModalAuthor').innerText = sub.studentName;
+            document.getElementById('gradeModalWords').innerText = sub.content.length;
+            document.getElementById('gradeModalEssayContent').innerText = sub.content;
+            document.getElementById('gradeScore').value = sub.score || 90;
+            document.getElementById('gradeLevel').value = sub.level || '特優';
+            document.getElementById('gradeFeedback').value = sub.feedback || '';
+
+            document.getElementById('gradeModal').classList.remove('hidden');
+        }
+
+        function closeGradeModal() {
+            document.getElementById('gradeModal').classList.add('hidden');
+        }
+
+        function submitGrade() {
+            const sub = submissions.find(s => s.id === currentGradingSubId);
+            if (sub) {
+                sub.score = parseInt(document.getElementById('gradeScore').value) || 0;
+                sub.level = document.getElementById('gradeLevel').value;
+                sub.feedback = document.getElementById('gradeFeedback').value.trim();
+                sub.status = 'graded';
+                saveData();
+                renderTeacherSubmissions();
+                closeGradeModal();
+                alert('批閱完成！評語已公佈予學生。');
+            }
+        }
+
+        function publishTopic() {
+            const title = document.getElementById('newTopicTitle').value.trim();
+            const desc = document.getElementById('newTopicDesc').value.trim();
+            const dueDate = document.getElementById('newTopicDueDate').value;
+            const isWeekly = document.getElementById('newTopicIsWeekly').checked;
+
+            if (!title || !desc || !dueDate) {
+                alert('請填寫完整作文題目與截止日期！');
+                return;
+            }
+
+            if (isWeekly) topics.forEach(t => t.isWeekly = false);
+
+            topics.push({ id: 't_' + Date.now(), title, desc, dueDate, isWeekly });
+            saveData();
+            renderTopics();
+            alert('新作文題目發布成功！');
+            switchNav('home');
+        }
+
+        function renderArticles(filter = 'all') {
+            const grid = document.getElementById('articlesGrid');
+            const homeList = document.getElementById('homeArticleList');
+
+            let filtered = articles;
+            if (filter === 'bookmarked') filtered = articles.filter(a => a.bookmarked);
+            if (filter === 'flagged') filtered = articles.filter(a => a.flagged);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `<p class="col-span-full text-xs text-[#7c634b] py-4 text-center">目前尚無發布的文章。</p>`;
+            } else {
+                grid.innerHTML = filtered.map(a => `
+                    <div class="ancient-card p-4 sm:p-5 rounded-2xl flex flex-col justify-between space-y-4">
+                        <div>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-xs bg-[#e4d7be] text-[#4a2e1b] font-bold px-2.5 py-1 rounded-md border border-[#b8a686]">${a.category}</span>
+                                <div class="space-x-2 text-stone-400">
+                                    <button onclick="toggleBookmark('${a.id}')" class="${a.bookmarked ? 'text-amber-600' : ''}"><i class="fa-solid fa-star"></i></button>
+                                    <button onclick="toggleFlag('${a.id}')" class="${a.flagged ? 'text-red-700' : ''}"><i class="fa-solid fa-flag"></i></button>
+                                </div>
+                            </div>
+                            <h4 class="font-bold text-sm sm:text-base text-[#4a2e1b] mb-2">${a.title}</h4>
+                            <p class="text-xs text-[#614935] line-clamp-3 leading-relaxed">${a.content}</p>
+                        </div>
+                        <div class="pt-2 border-t border-[#d8caa7] flex justify-end">
+                            <button onclick="readArticle('${a.id}')" class="text-xs bg-[#e4d7be] text-[#4a2e1b] font-bold px-3 py-1.5 rounded-lg border border-[#b8a686]">閱讀全文</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            if (articles.length === 0) {
+                homeList.innerHTML = `<p class="text-xs text-[#7c634b] py-2">目前尚無每週精選文章。</p>`;
+            } else {
+                homeList.innerHTML = articles.slice(0, 3).map(a => `
+                    <div class="p-3 bg-[#f2ebdc] rounded-xl border border-[#b8a686] flex justify-between items-center cursor-pointer" onclick="readArticle('${a.id}')">
+                        <div>
+                            <p class="font-bold text-[#4a2e1b] text-xs sm:text-sm">${a.title}</p>
+                            <p class="text-[10px] sm:text-xs text-[#7c634b]">分類：${a.category}</p>
+                        </div>
+                        <span class="text-xs text-[#8c2e1b] font-bold">閱讀 →</span>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function filterArticles(type) {
+            renderArticles(type);
+        }
+
+        function toggleBookmark(artId) {
+            const art = articles.find(a => a.id === artId);
+            if (art) { art.bookmarked = !art.bookmarked; saveData(); renderArticles(); }
+        }
+
+        function toggleFlag(artId) {
+            const art = articles.find(a => a.id === artId);
+            if (art) { art.flagged = !art.flagged; saveData(); renderArticles(); }
+        }
+
+        function readArticle(artId) {
+            const art = articles.find(a => a.id === artId);
+            if (!art) return;
+
+            document.getElementById('readModalCategory').innerText = art.category;
+            document.getElementById('readModalTitle').innerText = art.title;
+            document.getElementById('readModalContent').innerText = art.content;
+            document.getElementById('readModal').classList.remove('hidden');
+        }
+
+        function closeReadModal() {
+            document.getElementById('readModal').classList.add('hidden');
+        }
+
+        function openCreateArticleModal() {
+            document.getElementById('articleModal').classList.remove('hidden');
+        }
+
+        function closeArticleModal() {
+            document.getElementById('articleModal').classList.add('hidden');
+        }
+
+        function publishArticle() {
+            const title = document.getElementById('newArtTitle').value.trim();
+            const category = document.getElementById('newArtCategory').value.trim();
+            const content = document.getElementById('newArtContent').value.trim();
+
+            if (!title || !content) { alert('請填寫完整文章內容！'); return; }
+
+            articles.push({ id: 'a_' + Date.now(), title, category: category || '寫作技巧', content, bookmarked: false, flagged: false });
+            saveData();
+            renderArticles();
+            closeArticleModal();
+            alert('知識文章發布成功！');
+        }
+
+        function renderStudentManagement() {
+            const tbody = document.getElementById('studentManagementTable');
+            const students = users.filter(u => u.role === 'student');
+
+            if (students.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-[#7c634b] text-xs sm:text-sm">目前尚無已註冊帳號之學生。</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = students.map(s => {
+                const mySubs = submissions.filter(sub => sub.studentId === s.id && sub.status === 'graded');
+                const avgScore = mySubs.length > 0 
+                    ? Math.round(mySubs.reduce((acc, curr) => acc + curr.score, 0) / mySubs.length)
+                    : '--';
+
+                return `
+                    <tr class="hover:bg-[#f2ebdc]">
+                        <td class="p-3 font-bold text-[#4a2e1b]">${s.name}</td>
+                        <td class="p-3">${s.email}</td>
+                        <td class="p-3 font-bold text-[#8c2e1b]">${submissions.filter(sub => sub.studentId === s.id).length} 篇</td>
+                        <td class="p-3 font-bold text-[#2d5a3f]">${avgScore}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "寫作與閱讀學習平台",
+  "description": "典雅書卷風線上作文批改與閱讀學習平台，提供每週作文出題、學生線上揮毫寫作、導師線上評閱打分、知識文章庫與學生學情管理。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
